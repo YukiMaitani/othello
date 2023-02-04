@@ -3,13 +3,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:othello/pages/game/game_page.dart';
 
 void main() {
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends HookConsumerWidget{
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
+    return const MaterialApp(
       home: GamePage()
     );
   }
