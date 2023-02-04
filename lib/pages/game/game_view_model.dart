@@ -6,9 +6,20 @@ import '../../foundation/enum.dart';
 final gameProvider = ChangeNotifierProvider((ref) => GameViewModel());
 
 class GameViewModel extends ChangeNotifier {
-  
+
   List<DiskType> get disksType {
-    return disksText.map((name) => DiskType.values.byName(name)).toList();
+    final disksType = disksText.map((name){
+      if(name == '黒') {
+        return DiskType.black;
+      }
+
+      if(name == '白') {
+        return DiskType.white;
+      }
+
+      return DiskType.none;
+    }).toList();
+    return disksType;
   }
 
   List<String> _disksText =
