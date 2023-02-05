@@ -34,7 +34,7 @@ class GameViewModel extends ChangeNotifier {
 
   Turn get turn => _turn;
 
-  set turn(value) {
+  set turn(Turn value) {
     _turn = value;
     notifyListeners();
   }

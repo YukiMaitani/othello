@@ -24,6 +24,7 @@ class GamePage extends HookConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          _buildGameInformation(),
           _buildBoard(),
         ],
       );
@@ -61,7 +62,7 @@ class GamePage extends HookConsumerWidget {
           ),
         ),
         onTap: () {
-          if(isPossiblePlaceDisk) {
+          if (isPossiblePlaceDisk) {
             ref.read(gameProvider).placeDisk(disk);
           }
         },
@@ -94,5 +95,47 @@ class GamePage extends HookConsumerWidget {
       decoration: BoxDecoration(
           color: diskColor, borderRadius: BorderRadius.circular(50)),
     );
+  }
+
+  Widget _buildGameInformation() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildPlayerInformation(Turn.white),
+          _buildPlayerInformation(Turn.black)
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlayerInformation(Turn player) {
+    return HookConsumer(builder: (context, ref, child) {
+      final isTurnPlayer =
+          ref.watch(gameProvider.select((value) => value.turn)) == player;
+      const double baseWidth = 40;
+      return Container(
+        width: baseWidth * 4,
+        height: baseWidth + 4,
+        decoration: BoxDecoration(
+          color: isTurnPlayer ? Colors.redAccent : player.reverseColor,
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(50), bottomLeft: Radius.circular(50)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              width: baseWidth,
+              height: baseWidth,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50), color: player.color),
+            ),
+          ),
+        ),
+      );
+    });
   }
 }

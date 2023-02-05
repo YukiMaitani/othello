@@ -1,3 +1,7 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+
 enum DiskType {
   black('黒'),
   white('白'),
@@ -17,6 +21,24 @@ enum Turn {
   const Turn(this.text);
 
   final String text;
+
+  Color get color {
+    switch (this) {
+      case Turn.black:
+        return Colors.black;
+      case Turn.white:
+        return Colors.white;
+    }
+  }
+
+  Color get reverseColor {
+    switch (this) {
+      case Turn.white:
+        return Colors.black;
+      case Turn.black:
+        return Colors.white;
+    }
+  }
 }
 
 enum Direction {
