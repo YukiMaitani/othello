@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:logger/logger.dart';
 import 'package:othello/model/disk.dart';
 
 import '../../foundation/enum.dart';
@@ -76,28 +75,25 @@ class GameViewModel extends ChangeNotifier {
             continue;
           }
 
+          // 方向に相手の駒がある時の処理。その駒から次の駒から調べる。
           var directionLineColumn = directionColumn + direction.column;
           var directionLineRow = directionRow + direction.row;
-          Logger().i(
-              'column: $column row: $row\ndirectionLineColumn: $directionLineColumn directionLineRow: $directionLineRow\nisOutOfIndex: ${isOutOfIndex(directionLineColumn, directionLineRow)}');
+
+          // 調べるマスが盤外になったら抜ける
           while (!isOutOfIndex(directionLineColumn, directionLineRow)) {
+
+            // 駒が無ければ抜ける
             if (disks[directionLineColumn][directionLineRow].diskType ==
                 DiskType.none) {
-              Logger().i(
-                  '駒がないので抜ける\ndirectionLineColumn: $directionLineColumn directionLineRow $directionLineRow');
-              directionLineColumn += direction.column;
-              directionLineRow += direction.row;
               break;
             }
 
+            // 自分の駒があれば駒を置ける所。trueを返す
             if (disks[directionLineColumn][directionLineRow].diskType ==
                 turnDiskType) {
-              Logger().i('true!\n column: $column row: $row');
               return true;
             }
 
-            Logger().i(
-                'column: $column row: $row \n directionLineColumn: $directionLineColumn directionLineRow: $directionLineRow');
             directionLineColumn += direction.column;
             directionLineRow += direction.row;
           }

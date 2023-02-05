@@ -72,7 +72,7 @@ class GamePage extends HookConsumerWidget {
         return isPossiblePlaceDisk
             ? const Text(
                 '・',
-                style: TextStyle(fontSize: 20, color: Colors.yellow),
+                style: TextStyle(fontSize: 24, color: Colors.yellow),
               )
             : const SizedBox();
 
