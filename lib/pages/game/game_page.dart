@@ -60,6 +60,11 @@ class GamePage extends HookConsumerWidget {
             child: _buildDisk(squareWidth, disk, isPossiblePlaceDisk),
           ),
         ),
+        onTap: () {
+          if(isPossiblePlaceDisk) {
+            ref.read(gameProvider).placeDisk(disk);
+          }
+        },
       );
     });
   }

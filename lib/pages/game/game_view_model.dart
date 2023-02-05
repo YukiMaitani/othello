@@ -81,7 +81,6 @@ class GameViewModel extends ChangeNotifier {
 
           // 調べるマスが盤外になったら抜ける
           while (!isOutOfIndex(directionLineColumn, directionLineRow)) {
-
             // 駒が無ければ抜ける
             if (disks[directionLineColumn][directionLineRow].diskType ==
                 DiskType.none) {
@@ -102,5 +101,11 @@ class GameViewModel extends ChangeNotifier {
         // ８方向を全て調べて条件に合わなければfalseを返す
         return false;
     }
+  }
+
+  void placeDisk(Disk disk) {
+    disks[disk.column][disk.row] =
+        disks[disk.column][disk.row].copyWith(diskType: turnDiskType);
+    notifyListeners();
   }
 }
