@@ -30,13 +30,14 @@ class GamePage extends HookConsumerWidget {
 
   Widget _buildBoard() {
     return HookConsumer(builder: (context, ref, child) {
-      final disksType =
-          ref.watch(gameProvider.select((value) => value.disksType));
+      final disksTypeList =
+          ref.watch(gameProvider.select((value) => value.disksTypeFlatten));
       return GridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 8,
-        children: disksType.map((diskType) => _buildSquare(diskType)).toList(),
+        children:
+            disksTypeList.map((diskType) => _buildSquare(diskType)).toList(),
       );
     });
   }

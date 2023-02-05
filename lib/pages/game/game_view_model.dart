@@ -6,38 +6,24 @@ import '../../foundation/enum.dart';
 final gameProvider = ChangeNotifierProvider((ref) => GameViewModel());
 
 class GameViewModel extends ChangeNotifier {
-
-  List<DiskType> get disksType {
-    final disksType = disksText.map((name){
-      if(name == '黒') {
-        return DiskType.black;
-      }
-
-      if(name == '白') {
-        return DiskType.white;
-      }
-
-      return DiskType.none;
-    }).toList();
-    return disksType;
+  GameViewModel() {
+    initDisksType();
   }
 
-  List<String> _disksText =
-  [
-    '無','無','無','無','無','無','無','無',
-    '無','無','無','無','無','無','無','無',
-    '無','無','無','無','無','無','無','無',
-    '無','無','無','白','黒','無','無','無',
-    '無','無','無','黒','白','無','無','無',
-    '無','無','無','無','無','無','無','無',
-    '無','無','無','無','無','無','無','無',
-    '無','無','無','無','無','無','無','無',
-  ];
+  final columnsNumber = 8;
+  final rowsNumber = 8;
 
-  List<String> get disksText => _disksText;
+  late List<List<DiskType>> disksType;
 
-  set disksText(value) {
-    _disksText = value;
-    notifyListeners();
+  List<DiskType> get disksTypeFlatten =>
+      disksType.expand((diskType) => diskType).toList();
+
+  void initDisksType() {
+    disksType = List.generate(
+        columnsNumber, (_) => List.generate(rowsNumber, (_) => DiskType.none));
+    disksType[3][3] = DiskType.white;
+    disksType[3][4] = DiskType.black;
+    disksType[4][3] = DiskType.black;
+    disksType[4][4] = DiskType.white;
   }
 }
