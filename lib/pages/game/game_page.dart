@@ -92,18 +92,13 @@ class GamePage extends HookConsumerWidget {
   }
 
   Widget _buildGameInformation() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(child: _buildPlayerInformation(Turn.white)),
-          const SizedBox(
-            width: 80,
-          ),
-          Expanded(child: _buildPlayerInformation(Turn.black))
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(flex: 3, child: _buildPlayerInformation(Turn.white)),
+        const Spacer(flex: 2,),
+        Expanded(flex: 3, child: _buildPlayerInformation(Turn.black))
+      ],
     );
   }
 
