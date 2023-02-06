@@ -98,7 +98,9 @@ class GamePage extends HookConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(flex: 3, child: _buildPlayerInformation(Turn.white)),
-        const Spacer(flex: 2,),
+        const Spacer(
+          flex: 2,
+        ),
         Expanded(flex: 3, child: _buildPlayerInformation(Turn.black))
       ],
     );
@@ -111,7 +113,7 @@ class GamePage extends HookConsumerWidget {
       return Container(
         height: 40,
         decoration: BoxDecoration(
-          color: isTurnPlayer ? Colors.redAccent : player.reverseColor,
+          color: isTurnPlayer ? Colors.redAccent : Colors.black,
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(50), bottomLeft: Radius.circular(50)),
         ),
@@ -122,7 +124,9 @@ class GamePage extends HookConsumerWidget {
             child: Container(
               margin: const EdgeInsets.all(3),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50), color: player.color),
+                  borderRadius: BorderRadius.circular(50),
+                  color: player.color,
+                  border: Border.all(color: Colors.white, width: 1.5)),
             ),
           ),
         ),
