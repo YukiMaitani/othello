@@ -15,6 +15,7 @@ class GamePage extends HookConsumerWidget {
         padding: const EdgeInsets.all(20.0),
         child: _buildBody(),
       ),
+      backgroundColor: const Color(0xFFFEFFDF),
     );
   }
 
@@ -60,6 +61,7 @@ class GamePage extends HookConsumerWidget {
         onTap: () {
           if (isPossiblePlaceDisk) {
             ref.read(gameProvider).placeDisk(disk);
+            ref.read(gameProvider).switchTurn();
           }
         },
       );

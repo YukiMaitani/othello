@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 enum DiskType {
   black('黒'),
   white('白'),
-  none('無'),
-  ;
+  none('無');
 
   const DiskType(this.text);
 
@@ -15,8 +14,7 @@ enum DiskType {
 
 enum Turn {
   black('黒番'),
-  white('白番'),
-  ;
+  white('白番');
 
   const Turn(this.text);
 
@@ -37,6 +35,15 @@ enum Turn {
         return Colors.black;
       case Turn.black:
         return Colors.white;
+    }
+  }
+
+  Turn get switchTurn {
+    switch(this) {
+      case Turn.white:
+        return Turn.black;
+      case Turn.black:
+          return Turn.white;
     }
   }
 }

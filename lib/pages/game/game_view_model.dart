@@ -9,7 +9,6 @@ final gameProvider = ChangeNotifierProvider((ref) => GameViewModel());
 class GameViewModel extends ChangeNotifier {
   GameViewModel() {
     initDisksType();
-    notifyListeners();
   }
 
   final columnsNumber = 8;
@@ -28,6 +27,7 @@ class GameViewModel extends ChangeNotifier {
     disks[3][4] = disks[3][4].copyWith(diskType: DiskType.black);
     disks[4][3] = disks[4][3].copyWith(diskType: DiskType.black);
     disks[4][4] = disks[4][4].copyWith(diskType: DiskType.white);
+    notifyListeners();
   }
 
   Turn _turn = Turn.black;
@@ -101,6 +101,11 @@ class GameViewModel extends ChangeNotifier {
         // ８方向を全て調べて条件に合わなければfalseを返す
         return false;
     }
+  }
+
+  void switchTurn() {
+    _turn = turn.switchTurn;
+    notifyListeners();
   }
 
   void placeDisk(Disk disk) {
