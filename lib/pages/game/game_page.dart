@@ -60,9 +60,7 @@ class GamePage extends HookConsumerWidget {
         ),
         onTap: () {
           if (isPossiblePlaceDisk) {
-            ref.read(gameProvider).placeDisk(disk);
-            ref.read(gameProvider).turnOverDisks(disk);
-            ref.read(gameProvider).switchTurn();
+            ref.read(gameProvider).onePlay(disk);
           }
         },
       );

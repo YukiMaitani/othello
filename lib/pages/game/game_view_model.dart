@@ -209,4 +209,11 @@ class GameViewModel extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  void onePlay(Disk disk) {
+    placeDisk(disk);
+    turnOverDisks(disk);
+    switchTurn();
+  }
+
 }
