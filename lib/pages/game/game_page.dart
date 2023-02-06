@@ -111,6 +111,16 @@ class GamePage extends HookConsumerWidget {
     return HookConsumer(builder: (context, ref, child) {
       final isTurnPlayer =
           ref.watch(gameProvider.select((value) => value.turn)) == player;
+      final int disksNumber;
+      switch(player) {
+        case Turn.black:
+          disksNumber = ref.watch(gameProvider.select((value) => value.blackDisksNumber));
+          break;
+        case Turn.white:
+          disksNumber = ref.watch(gameProvider.select((value) => value.whiteDisksNumber));
+          break;
+      }
+
       return Container(
         height: 40,
         decoration: BoxDecoration(
@@ -118,18 +128,32 @@ class GamePage extends HookConsumerWidget {
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(50), bottomLeft: Radius.circular(50)),
         ),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: Container(
-              margin: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: player.color,
-                  border: Border.all(color: Colors.white, width: 1.5)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                margin: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: player.color,
+                    border: Border.all(color: Colors.white, width: 1.5)),
+              ),
             ),
-          ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                disksNumber.toString(),
+                style: const TextStyle(
+                  color: Color(0xFFFEFFDF),
+                  fontSize: 24
+                ),
+              ),
+            ),
+          ],
         ),
       );
     });

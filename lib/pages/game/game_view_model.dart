@@ -36,6 +36,24 @@ class GameViewModel extends ChangeNotifier {
 
   DiskType get turnDiskType => DiskType.values.byName(turn.name);
 
+  int _blackDisksNumber = 2;
+
+  int get blackDisksNumber => _blackDisksNumber;
+
+  set blackDisksNumber(int value) {
+    _blackDisksNumber = value;
+    notifyListeners();
+  }
+
+  int _whiteDisksNumber = 2;
+
+  int get whiteDisksNumber => _whiteDisksNumber;
+
+  set whiteDisksNumber(int value) {
+    _whiteDisksNumber = value;
+    notifyListeners();
+  }
+
   void initDisksType() {
     _disks = List.generate(
         columnsNumber,
