@@ -113,4 +113,55 @@ class GameViewModel extends ChangeNotifier {
         disks[disk.column][disk.row].copyWith(diskType: turnDiskType);
     notifyListeners();
   }
+
+  void turnOverDisks(Disk disk) {
+    final column = disk.column;
+    final row = disk.row;
+    // 駒がない所から８方向の駒について調べる
+    for (var direction in Direction.values) {
+      final directionColumn = column + direction.column;
+      final directionRow = row + direction.row;
+
+      // 盤外であれば抜ける
+      if (isOutOfIndex(directionColumn, directionRow)) {
+        continue;
+      }
+
+      // 手番の人の駒であるまたは駒が無ければ抜ける
+      if (disks[directionColumn][directionRow].diskType == turnDiskType ||
+          disks[directionColumn][directionRow].diskType == DiskType.none) {
+        continue;
+      }
+
+      // 方向に相手の駒がある時の処理。その駒から次の駒から調べる。
+      var directionLineColumn = directionColumn + direction.column;
+      var directionLineRow = directionRow + direction.row;
+
+      // 調べるマスが盤外になったら抜ける
+      while (!isOutOfIndex(directionLineColumn, directionLineRow)) {
+        // 駒が無ければ抜ける
+        if (disks[directionLineColumn][directionLineRow].diskType ==
+            DiskType.none) {
+          break;
+        }
+
+        // 自分の駒があればそこから駒を置いた地点まで駒を返す
+        if (disks[directionLineColumn][directionLineRow].diskType ==
+            turnDiskType) {
+          while (directionLineColumn != column || directionLineRow != row) {
+            directionLineColumn -= direction.column;
+            directionLineRow -= direction.row;
+            disks[directionLineColumn][directionLineRow] =
+                disks[directionLineColumn][directionLineRow]
+                    .copyWith(diskType: turnDiskType);
+          }
+          break;
+        }
+
+        directionLineColumn += direction.column;
+        directionLineRow += direction.row;
+      }
+    }
+    notifyListeners();
+  }
 }
