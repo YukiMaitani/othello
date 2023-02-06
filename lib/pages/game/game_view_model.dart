@@ -142,6 +142,8 @@ class GameViewModel extends ChangeNotifier {
   void turnOverDisks(Disk disk) {
     final column = disk.column;
     final row = disk.row;
+    var turnOverDisksNumber = 0;
+
     // 駒がない所から８方向の駒について調べる
     for (var direction in Direction.values) {
       final directionColumn = column + direction.column;
@@ -173,13 +175,16 @@ class GameViewModel extends ChangeNotifier {
         // 自分の駒があればそこから駒を置いた地点まで駒を返す
         if (disks[directionLineColumn][directionLineRow].diskType ==
             turnDiskType) {
-          while (directionLineColumn != column || directionLineRow != row) {
-            directionLineColumn -= direction.column;
-            directionLineRow -= direction.row;
+          directionLineColumn -= direction.column;
+          directionLineRow -= direction.row;
+          do {
             _disks[directionLineColumn][directionLineRow] =
                 disks[directionLineColumn][directionLineRow]
                     .copyWith(diskType: turnDiskType);
-          }
+            turnOverDisksNumber++;
+            directionLineColumn -= direction.column;
+            directionLineRow -= direction.row;
+          } while (directionLineColumn != column || directionLineRow != row);
 
           // 自分の地点に帰って来たら抜ける
           break;
@@ -189,6 +194,19 @@ class GameViewModel extends ChangeNotifier {
         directionLineRow += direction.row;
       }
     }
+
+    switch (turn) {
+      case Turn.black:
+        _blackDisksNumber += (turnOverDisksNumber + 1);
+        _whiteDisksNumber -= turnOverDisksNumber;
+        break;
+
+      case Turn.white:
+        _whiteDisksNumber += (turnOverDisksNumber + 1);
+        _blackDisksNumber -= turnOverDisksNumber;
+        break;
+    }
+
     notifyListeners();
   }
 }
