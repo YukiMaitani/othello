@@ -14,21 +14,16 @@ class GameViewModel extends ChangeNotifier {
   final columnsNumber = 8;
   final rowsNumber = 8;
 
-  late List<List<Disk>> disks;
+  late List<List<Disk>> _disks;
 
-  List<Disk> get disksFlatten => disks.expand((disk) => disk).toList();
+  List<List<Disk>> get disks => _disks;
 
-  void initDisksType() {
-    disks = List.generate(
-        columnsNumber,
-        (column) => List.generate(rowsNumber,
-            (row) => Disk(diskType: DiskType.none, column: column, row: row)));
-    disks[3][3] = disks[3][3].copyWith(diskType: DiskType.white);
-    disks[3][4] = disks[3][4].copyWith(diskType: DiskType.black);
-    disks[4][3] = disks[4][3].copyWith(diskType: DiskType.black);
-    disks[4][4] = disks[4][4].copyWith(diskType: DiskType.white);
+  set disks(List<List<Disk>> value) {
+    _disks = value;
     notifyListeners();
   }
+
+  List<Disk> get disksFlatten => disks.expand((disk) => disk).toList();
 
   Turn _turn = Turn.black;
 
@@ -40,6 +35,18 @@ class GameViewModel extends ChangeNotifier {
   }
 
   DiskType get turnDiskType => DiskType.values.byName(turn.name);
+
+  void initDisksType() {
+    _disks = List.generate(
+        columnsNumber,
+        (column) => List.generate(rowsNumber,
+            (row) => Disk(diskType: DiskType.none, column: column, row: row)));
+    _disks[3][3] = _disks[3][3].copyWith(diskType: DiskType.white);
+    _disks[3][4] = _disks[3][4].copyWith(diskType: DiskType.black);
+    _disks[4][3] = _disks[4][3].copyWith(diskType: DiskType.black);
+    _disks[4][4] = _disks[4][4].copyWith(diskType: DiskType.white);
+    notifyListeners();
+  }
 
   bool isOutOfIndex(int columnIndex, int rowIndex) {
     return columnIndex < 0 ||
@@ -151,10 +158,12 @@ class GameViewModel extends ChangeNotifier {
           while (directionLineColumn != column || directionLineRow != row) {
             directionLineColumn -= direction.column;
             directionLineRow -= direction.row;
-            disks[directionLineColumn][directionLineRow] =
+            _disks[directionLineColumn][directionLineRow] =
                 disks[directionLineColumn][directionLineRow]
                     .copyWith(diskType: turnDiskType);
           }
+
+          // 自分の地点に帰って来たら抜ける
           break;
         }
 
