@@ -12,7 +12,7 @@ class GamePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(20.0),
         child: _buildBody(),
       ),
     );
@@ -48,17 +48,13 @@ class GamePage extends HookConsumerWidget {
     return HookConsumer(builder: (context, ref, child) {
       final isPossiblePlaceDisk = ref.watch(
           gameProvider.select((value) => value.isPossiblePlaceDisk(disk)));
-      final baseWidth = MediaQuery.of(context).size.width * 0.9;
-      final squareWidth = baseWidth / 8;
       return GestureDetector(
         child: Container(
-          width: squareWidth,
-          height: squareWidth,
           decoration: BoxDecoration(
               color: const Color(0xFF008000),
               border: Border.all(color: Colors.black)),
           child: Center(
-            child: _buildDisk(squareWidth, disk, isPossiblePlaceDisk),
+            child: _buildDisk(disk, isPossiblePlaceDisk),
           ),
         ),
         onTap: () {
@@ -70,8 +66,7 @@ class GamePage extends HookConsumerWidget {
     });
   }
 
-  Widget _buildDisk(double squareWidth, Disk disk, bool isPossiblePlaceDisk) {
-    final diskWidth = squareWidth * 0.8;
+  Widget _buildDisk(Disk disk, bool isPossiblePlaceDisk) {
     final Color diskColor;
     switch (disk.diskType) {
       case DiskType.none:
@@ -90,8 +85,7 @@ class GamePage extends HookConsumerWidget {
         break;
     }
     return Container(
-      width: diskWidth,
-      height: diskWidth,
+      margin: const EdgeInsets.all(4),
       decoration: BoxDecoration(
           color: diskColor, borderRadius: BorderRadius.circular(50)),
     );
@@ -103,8 +97,11 @@ class GamePage extends HookConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildPlayerInformation(Turn.white),
-          _buildPlayerInformation(Turn.black)
+          Expanded(child: _buildPlayerInformation(Turn.white)),
+          const SizedBox(
+            width: 80,
+          ),
+          Expanded(child: _buildPlayerInformation(Turn.black))
         ],
       ),
     );
@@ -114,22 +111,19 @@ class GamePage extends HookConsumerWidget {
     return HookConsumer(builder: (context, ref, child) {
       final isTurnPlayer =
           ref.watch(gameProvider.select((value) => value.turn)) == player;
-      const double baseWidth = 40;
       return Container(
-        width: baseWidth * 4,
-        height: baseWidth + 4,
+        height: 40,
         decoration: BoxDecoration(
           color: isTurnPlayer ? Colors.redAccent : player.reverseColor,
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(50), bottomLeft: Radius.circular(50)),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: AspectRatio(
+            aspectRatio: 1,
             child: Container(
-              width: baseWidth,
-              height: baseWidth,
+              margin: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50), color: player.color),
             ),
