@@ -60,8 +60,26 @@ class GamePage extends HookConsumerWidget {
         ),
         onTap: () {
           if (isPossiblePlaceDisk) {
-            ref.read(gameProvider).onePlay(disk);
+            ref.read(gameProvider).onePlay(
+                  disk,
+                );
           }
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            ref.read(gameProvider).turnContinueOrSkip(showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: const Text('置けるマスがない為ターンをスキップします。'),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('OK'))
+                    ],
+                  );
+                }));
+          });
         },
       );
     });
@@ -110,12 +128,14 @@ class GamePage extends HookConsumerWidget {
       final isTurnPlayer =
           ref.watch(gameProvider.select((value) => value.turn)) == player;
       final int disksNumber;
-      switch(player) {
+      switch (player) {
         case Turn.black:
-          disksNumber = ref.watch(gameProvider.select((value) => value.blackDisksNumber));
+          disksNumber =
+              ref.watch(gameProvider.select((value) => value.blackDisksNumber));
           break;
         case Turn.white:
-          disksNumber = ref.watch(gameProvider.select((value) => value.whiteDisksNumber));
+          disksNumber =
+              ref.watch(gameProvider.select((value) => value.whiteDisksNumber));
           break;
       }
 
@@ -145,10 +165,7 @@ class GamePage extends HookConsumerWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 disksNumber.toString(),
-                style: const TextStyle(
-                  color: Color(0xFFFEFFDF),
-                  fontSize: 24
-                ),
+                style: const TextStyle(color: Color(0xFFFEFFDF), fontSize: 24),
               ),
             ),
           ],

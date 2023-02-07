@@ -54,6 +54,16 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isHavePossiblePlaceDiskSquare = false;
+
+  bool get isHavePossiblePlaceDiskSquare => _isHavePossiblePlaceDiskSquare;
+
+  set isHavePossiblePlaceDiskSquare(bool value) {
+    _isHavePossiblePlaceDiskSquare = value;
+    notifyListeners();
+  }
+
+
   void initDisksType() {
     _disks = List.generate(
         columnsNumber,
@@ -115,6 +125,7 @@ class GameViewModel extends ChangeNotifier {
             // 自分の駒があれば駒を置ける所。trueを返す
             if (disks[directionLineColumn][directionLineRow].diskType ==
                 turnDiskType) {
+              _isHavePossiblePlaceDiskSquare = true;
               return true;
             }
 
@@ -210,10 +221,19 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> turnContinueOrSkip(Future<void> showDialog) async{
+    if(!isHavePossiblePlaceDiskSquare) {
+      await showDialog;
+      switchTurn();
+    }
+    _isHavePossiblePlaceDiskSquare = false;
+  }
+
   void onePlay(Disk disk) {
     placeDisk(disk);
     turnOverDisks(disk);
     switchTurn();
+    notifyListeners();
   }
 
 }
