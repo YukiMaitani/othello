@@ -1,3 +1,4 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:othello/foundation/enum.dart';
@@ -60,26 +61,17 @@ class GamePage extends HookConsumerWidget {
         ),
         onTap: () {
           if (isPossiblePlaceDisk) {
-            ref.read(gameProvider).onePlay(
-                  disk,
-                );
-          }
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            ref.read(gameProvider).turnContinueOrSkip(showDialog(
+            final gameReader = ref.read(gameProvider);
+            gameReader.placeDisk(disk);
+            gameReader.turnOverDisks(disk);
+            if(!gameReader.isHavePossiblePlaceDiskSquare) {
+              showOkAlertDialog(
                 context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: const Text('置けるマスがない為ターンをスキップします。'),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('OK'))
-                    ],
-                  );
-                }));
-          });
+                message: '置けるマスがない為ターンをスキップします。',
+              );
+            }
+            gameReader.switchTurn();
+          }
         },
       );
     });

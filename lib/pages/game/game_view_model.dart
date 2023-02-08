@@ -54,6 +54,15 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  int _possiblePlaceSquareNumber = 0;
+
+  int get possiblePlaceSquareNumber => _possiblePlaceSquareNumber;
+
+  set possiblePlaceSquareNumber(int value) {
+    _possiblePlaceSquareNumber = value;
+    notifyListeners();
+  }
+
   bool _isHavePossiblePlaceDiskSquare = false;
 
   bool get isHavePossiblePlaceDiskSquare => _isHavePossiblePlaceDiskSquare;
@@ -126,6 +135,7 @@ class GameViewModel extends ChangeNotifier {
             if (disks[directionLineColumn][directionLineRow].diskType ==
                 turnDiskType) {
               _isHavePossiblePlaceDiskSquare = true;
+              _possiblePlaceSquareNumber += 1;
               return true;
             }
 
@@ -140,7 +150,11 @@ class GameViewModel extends ChangeNotifier {
   }
 
   void switchTurn() {
-    _turn = turn.switchTurn;
+    if(possiblePlaceSquareNumber > 0) {
+      _turn = turn.switchTurn;
+    }
+    _possiblePlaceSquareNumber = 0;
+    _isHavePossiblePlaceDiskSquare = false;
     notifyListeners();
   }
 
@@ -218,21 +232,6 @@ class GameViewModel extends ChangeNotifier {
         break;
     }
 
-    notifyListeners();
-  }
-
-  Future<void> turnContinueOrSkip(Future<void> showDialog) async{
-    if(!isHavePossiblePlaceDiskSquare) {
-      await showDialog;
-      switchTurn();
-    }
-    _isHavePossiblePlaceDiskSquare = false;
-  }
-
-  void onePlay(Disk disk) {
-    placeDisk(disk);
-    turnOverDisks(disk);
-    switchTurn();
     notifyListeners();
   }
 
