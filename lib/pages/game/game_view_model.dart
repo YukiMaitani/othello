@@ -82,6 +82,11 @@ class GameViewModel extends ChangeNotifier {
     _disks[3][4] = _disks[3][4].copyWith(diskType: DiskType.black);
     _disks[4][3] = _disks[4][3].copyWith(diskType: DiskType.black);
     _disks[4][4] = _disks[4][4].copyWith(diskType: DiskType.white);
+    _turn = Turn.black;
+    _blackDisksNumber = 2;
+    _whiteDisksNumber = 2;
+    _possiblePlaceSquareNumber = 0;
+    _isHavePossiblePlaceDiskSquare = false;
     notifyListeners();
   }
 

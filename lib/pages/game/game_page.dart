@@ -23,11 +23,16 @@ class GamePage extends HookConsumerWidget {
   Widget _buildBody() {
     return HookConsumer(builder: (context, ref, child) {
       return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const Spacer(flex: 5,),
           _buildGameInformation(),
+          const Spacer(),
           _buildBoard(),
+          const Spacer(flex: 2,),
+          _buildInitializationButton(),
+          const Spacer(flex: 2,),
         ],
       );
     });
@@ -64,7 +69,7 @@ class GamePage extends HookConsumerWidget {
             final gameReader = ref.read(gameProvider);
             gameReader.placeDisk(disk);
             gameReader.turnOverDisks(disk);
-            if(!gameReader.isHavePossiblePlaceDiskSquare) {
+            if (!gameReader.isHavePossiblePlaceDiskSquare) {
               showOkAlertDialog(
                 context: context,
                 message: '置けるマスがない為ターンをスキップします。',
@@ -161,6 +166,39 @@ class GamePage extends HookConsumerWidget {
               ),
             ),
           ],
+        ),
+      );
+    });
+  }
+
+  Widget _buildInitializationButton() {
+    return HookConsumer(builder: (context, ref, child){
+      return Align(
+        alignment: Alignment.bottomRight,
+        child: ElevatedButton(
+            onPressed: () async{
+              final willInitialization = await showOkCancelAlertDialog(
+                  context: context,
+                message: '新規対局を開始しますか？',
+                okLabel: '開始',
+              );
+              switch(willInitialization) {
+                case OkCancelResult.ok:
+                  ref.read(gameProvider).initDisksType();
+                  break;
+                case OkCancelResult.cancel:
+                  break;
+              }
+            },
+            child: const SizedBox(
+              width: 120,
+              height: 40,
+              child: Center(
+                child: Text(
+                    '新規対局',
+                ),
+              ),
+            )
         ),
       );
     });
