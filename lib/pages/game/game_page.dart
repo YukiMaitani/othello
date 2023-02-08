@@ -181,6 +181,7 @@ class GamePage extends HookConsumerWidget {
                   context: context,
                 message: '新規対局を開始しますか？',
                 okLabel: '開始',
+                cancelLabel: 'キャンセル'
               );
               switch(willInitialization) {
                 case OkCancelResult.ok:
