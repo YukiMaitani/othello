@@ -2,6 +2,7 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:othello/foundation/enum.dart';
+import 'package:othello/pages/game/board_painter.dart';
 import 'package:othello/pages/game/game_view_model.dart';
 
 import '../../model/disk.dart';
@@ -42,11 +43,16 @@ class GamePage extends HookConsumerWidget {
     return HookConsumer(builder: (context, ref, child) {
       final disksList =
           ref.watch(gameProvider.select((value) => value.disksFlatten));
-      return GridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 8,
-        children: disksList.map((disk) => _buildSquare(disk)).toList(),
+      final baseWidth = MediaQuery.of(context).size.width - 20;
+      return GestureDetector(
+        child: Container(
+          height: baseWidth,
+          width: baseWidth,
+          color: const Color(0xFF008000),
+          child: CustomPaint(
+            painter: BoardPainter(disksList),
+          ),
+        ),
       );
     });
   }
