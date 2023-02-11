@@ -13,7 +13,7 @@ class BoardPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final squareWidth = size.width / 8;
     final squareHeight = size.height / 8;
-    final diskRadius = squareWidth - 30;
+    final diskRadius = squareWidth / 13 * 5;
     final pathPaint = Paint()
       ..color = Colors.black
       ..strokeWidth = 1
