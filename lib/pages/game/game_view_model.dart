@@ -83,7 +83,7 @@ class GameViewModel extends ChangeNotifier {
 
   void canPlaceDisk(Turn checkTurn) {
     for(var i = 0;i < columnsNumber;i++) {
-      for(var j = 0;j< rowsNumber;j++) {
+      outer:for(var j = 0;j< rowsNumber;j++) {
         final disk = disks[i][j];
 
         switch (disk.diskType) {
@@ -129,15 +129,13 @@ class GameViewModel extends ChangeNotifier {
                     checkTurn.turnDiskType) {
                   _disks = _disks..[i][j] = disk.copyWith(isPlaceable: true);
                   Logger().i('column$i row$j\npossiblePlaceSquareNumber$possiblePlaceSquareNumber');
-                  break;
+                  continue outer;
                 }
 
                 directionLineColumn += direction.column;
                 directionLineRow += direction.row;
               }
             }
-
-            if(_disks[i][j].isPlaceable) { break; }
 
             // ８方向を全て調べて条件に合わなければfalseを返す
             _disks = _disks..[i][j] = disk.copyWith(isPlaceable: false);
