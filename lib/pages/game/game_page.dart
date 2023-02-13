@@ -55,8 +55,8 @@ class GamePage extends HookConsumerWidget {
           ),
         ),
         onTapDown: (value) {
-          final row = (value.localPosition.dx/ baseWidth * 10).toInt() - 1;
-          final column = (value.localPosition.dy / baseWidth * 10).toInt() - 1;
+          final row = ((value.localPosition.dx/ baseWidth) * 8).toInt();
+          final column = ((value.localPosition.dy / baseWidth) * 8).toInt();
           final tappedDisk = ref.read(gameProvider).disks[column][row];
           if(tappedDisk.isPlaceable) {
             ref.read(gameProvider).onePlay(tappedDisk);
