@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../foundation/enum.dart';
@@ -31,22 +30,22 @@ class BoardPainter extends CustomPainter {
     }
 
     for (final disk in disks) {
+      final centerOffset = Offset(
+          squareWidth * (disk.row + 1) - squareWidth / 2,
+          squareHeight * (disk.column + 1) - squareHeight / 2);
       switch (disk.diskType) {
         case DiskType.black:
-          final centerOffset = Offset(
-              squareWidth * (disk.row + 1) - squareWidth / 2,
-              squareHeight * (disk.column + 1) - squareHeight / 2);
           canvas.drawCircle(
               centerOffset, diskRadius, Paint()..color = Colors.black);
           break;
         case DiskType.white:
-          final centerOffset = Offset(
-              squareWidth * (disk.row + 1) - squareWidth / 2,
-              squareHeight * (disk.column + 1) - squareHeight / 2);
           canvas.drawCircle(
               centerOffset, diskRadius, Paint()..color = Colors.white);
           break;
         case DiskType.none:
+          if(disk.isPlaceable) {
+            canvas.drawCircle(centerOffset, 4, Paint()..color = Colors.yellow);
+          }
           break;
       }
     }

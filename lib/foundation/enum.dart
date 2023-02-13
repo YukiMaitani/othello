@@ -45,6 +45,18 @@ enum Turn {
           return Turn.white;
     }
   }
+
+  DiskType get turnDiskType {
+    switch (this) {
+
+      case Turn.black:
+        return DiskType.black;
+        break;
+      case Turn.white:
+        return DiskType.white;
+        break;
+    }
+  }
 }
 
 enum Direction {

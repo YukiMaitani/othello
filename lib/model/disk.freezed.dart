@@ -19,6 +19,7 @@ mixin _$Disk {
   DiskType get diskType => throw _privateConstructorUsedError;
   int get column => throw _privateConstructorUsedError;
   int get row => throw _privateConstructorUsedError;
+  bool get isPlaceable => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $DiskCopyWith<Disk> get copyWith => throw _privateConstructorUsedError;
@@ -29,7 +30,7 @@ abstract class $DiskCopyWith<$Res> {
   factory $DiskCopyWith(Disk value, $Res Function(Disk) then) =
       _$DiskCopyWithImpl<$Res, Disk>;
   @useResult
-  $Res call({DiskType diskType, int column, int row});
+  $Res call({DiskType diskType, int column, int row, bool isPlaceable});
 }
 
 /// @nodoc
@@ -48,6 +49,7 @@ class _$DiskCopyWithImpl<$Res, $Val extends Disk>
     Object? diskType = null,
     Object? column = null,
     Object? row = null,
+    Object? isPlaceable = null,
   }) {
     return _then(_value.copyWith(
       diskType: null == diskType
@@ -62,6 +64,10 @@ class _$DiskCopyWithImpl<$Res, $Val extends Disk>
           ? _value.row
           : row // ignore: cast_nullable_to_non_nullable
               as int,
+      isPlaceable: null == isPlaceable
+          ? _value.isPlaceable
+          : isPlaceable // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -72,7 +78,7 @@ abstract class _$$_DiskCopyWith<$Res> implements $DiskCopyWith<$Res> {
       __$$_DiskCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({DiskType diskType, int column, int row});
+  $Res call({DiskType diskType, int column, int row, bool isPlaceable});
 }
 
 /// @nodoc
@@ -87,6 +93,7 @@ class __$$_DiskCopyWithImpl<$Res> extends _$DiskCopyWithImpl<$Res, _$_Disk>
     Object? diskType = null,
     Object? column = null,
     Object? row = null,
+    Object? isPlaceable = null,
   }) {
     return _then(_$_Disk(
       diskType: null == diskType
@@ -101,6 +108,10 @@ class __$$_DiskCopyWithImpl<$Res> extends _$DiskCopyWithImpl<$Res, _$_Disk>
           ? _value.row
           : row // ignore: cast_nullable_to_non_nullable
               as int,
+      isPlaceable: null == isPlaceable
+          ? _value.isPlaceable
+          : isPlaceable // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -109,7 +120,10 @@ class __$$_DiskCopyWithImpl<$Res> extends _$DiskCopyWithImpl<$Res, _$_Disk>
 
 class _$_Disk with DiagnosticableTreeMixin implements _Disk {
   const _$_Disk(
-      {required this.diskType, required this.column, required this.row});
+      {required this.diskType,
+      required this.column,
+      required this.row,
+      required this.isPlaceable});
 
   @override
   final DiskType diskType;
@@ -117,10 +131,12 @@ class _$_Disk with DiagnosticableTreeMixin implements _Disk {
   final int column;
   @override
   final int row;
+  @override
+  final bool isPlaceable;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Disk(diskType: $diskType, column: $column, row: $row)';
+    return 'Disk(diskType: $diskType, column: $column, row: $row, isPlaceable: $isPlaceable)';
   }
 
   @override
@@ -130,7 +146,8 @@ class _$_Disk with DiagnosticableTreeMixin implements _Disk {
       ..add(DiagnosticsProperty('type', 'Disk'))
       ..add(DiagnosticsProperty('diskType', diskType))
       ..add(DiagnosticsProperty('column', column))
-      ..add(DiagnosticsProperty('row', row));
+      ..add(DiagnosticsProperty('row', row))
+      ..add(DiagnosticsProperty('isPlaceable', isPlaceable));
   }
 
   @override
@@ -141,11 +158,14 @@ class _$_Disk with DiagnosticableTreeMixin implements _Disk {
             (identical(other.diskType, diskType) ||
                 other.diskType == diskType) &&
             (identical(other.column, column) || other.column == column) &&
-            (identical(other.row, row) || other.row == row));
+            (identical(other.row, row) || other.row == row) &&
+            (identical(other.isPlaceable, isPlaceable) ||
+                other.isPlaceable == isPlaceable));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, diskType, column, row);
+  int get hashCode =>
+      Object.hash(runtimeType, diskType, column, row, isPlaceable);
 
   @JsonKey(ignore: true)
   @override
@@ -158,7 +178,8 @@ abstract class _Disk implements Disk {
   const factory _Disk(
       {required final DiskType diskType,
       required final int column,
-      required final int row}) = _$_Disk;
+      required final int row,
+      required final bool isPlaceable}) = _$_Disk;
 
   @override
   DiskType get diskType;
@@ -166,6 +187,8 @@ abstract class _Disk implements Disk {
   int get column;
   @override
   int get row;
+  @override
+  bool get isPlaceable;
   @override
   @JsonKey(ignore: true)
   _$$_DiskCopyWith<_$_Disk> get copyWith => throw _privateConstructorUsedError;

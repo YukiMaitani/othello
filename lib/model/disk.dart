@@ -9,6 +9,7 @@ class Disk with _$Disk {
     required DiskType diskType,
     required int column,
     required int row,
-  }) = _Disk;
+    required bool isPlaceable
+}) = _Disk;
 
 }

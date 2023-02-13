@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:othello/model/disk.dart';
 
 import '../../foundation/enum.dart';
@@ -34,8 +35,6 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  DiskType get turnDiskType => DiskType.values.byName(turn.name);
-
   int _blackDisksNumber = 2;
 
   int get blackDisksNumber => _blackDisksNumber;
@@ -54,22 +53,8 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  int _possiblePlaceSquareNumber = 0;
-
-  int get possiblePlaceSquareNumber => _possiblePlaceSquareNumber;
-
-  set possiblePlaceSquareNumber(int value) {
-    _possiblePlaceSquareNumber = value;
-    notifyListeners();
-  }
-
-  bool _isHavePossiblePlaceDiskSquare = false;
-
-  bool get isHavePossiblePlaceDiskSquare => _isHavePossiblePlaceDiskSquare;
-
-  set isHavePossiblePlaceDiskSquare(bool value) {
-    _isHavePossiblePlaceDiskSquare = value;
-    notifyListeners();
+  int get possiblePlaceSquareNumber {
+    return disksFlatten.where((disk) => disk.isPlaceable == true).length;
   }
 
 
@@ -77,16 +62,15 @@ class GameViewModel extends ChangeNotifier {
     _disks = List.generate(
         columnsNumber,
         (column) => List.generate(rowsNumber,
-            (row) => Disk(diskType: DiskType.none, column: column, row: row)));
+            (row) => Disk(diskType: DiskType.none, column: column, row: row, isPlaceable: false)));
     _disks[3][3] = _disks[3][3].copyWith(diskType: DiskType.white);
     _disks[3][4] = _disks[3][4].copyWith(diskType: DiskType.black);
     _disks[4][3] = _disks[4][3].copyWith(diskType: DiskType.black);
     _disks[4][4] = _disks[4][4].copyWith(diskType: DiskType.white);
     _turn = Turn.black;
+    canPlaceDisk(turn);
     _blackDisksNumber = 2;
     _whiteDisksNumber = 2;
-    _possiblePlaceSquareNumber = 0;
-    _isHavePossiblePlaceDiskSquare = false;
     notifyListeners();
   }
 
@@ -97,75 +81,84 @@ class GameViewModel extends ChangeNotifier {
         rowIndex > rowsNumber - 1;
   }
 
-  bool isPossiblePlaceDisk(
-    Disk disk,
-  ) {
-    switch (disk.diskType) {
-      case DiskType.black:
-      case DiskType.white:
-        return false;
+  void canPlaceDisk(Turn checkTurn) {
+    for(var i = 0;i < columnsNumber;i++) {
+      for(var j = 0;j< rowsNumber;j++) {
+        final disk = disks[i][j];
 
-      case DiskType.none:
-        final column = disk.column;
-        final row = disk.row;
-        // 駒がない所から８方向の駒について調べる
-        for (var direction in Direction.values) {
-          final directionColumn = column + direction.column;
-          final directionRow = row + direction.row;
+        switch (disk.diskType) {
+          case DiskType.black:
+          case DiskType.white:
+            _disks = _disks..[i][j] = disk.copyWith(isPlaceable: false);
+            Logger().i('column$i row$j\npossiblePlaceSquareNumber$possiblePlaceSquareNumber');
+            break;
 
-          // 盤外であれば抜ける
-          if (isOutOfIndex(directionColumn, directionRow)) {
-            continue;
-          }
+          case DiskType.none:
+            final column = disk.column;
+            final row = disk.row;
+            // 駒がない所から８方向の駒について調べる
+            for (var direction in Direction.values) {
+              final directionColumn = column + direction.column;
+              final directionRow = row + direction.row;
 
-          // 手番の人の駒であるまたは駒が無ければ抜ける
-          if (disks[directionColumn][directionRow].diskType == turnDiskType ||
-              disks[directionColumn][directionRow].diskType == DiskType.none) {
-            continue;
-          }
+              // 盤外であれば抜ける
+              if (isOutOfIndex(directionColumn, directionRow)) {
+                continue;
+              }
 
-          // 方向に相手の駒がある時の処理。その駒から次の駒から調べる。
-          var directionLineColumn = directionColumn + direction.column;
-          var directionLineRow = directionRow + direction.row;
+              // 手番の人の駒であるまたは駒が無ければ抜ける
+              if (disks[directionColumn][directionRow].diskType == checkTurn.turnDiskType ||
+                  disks[directionColumn][directionRow].diskType == DiskType.none) {
+                continue;
+              }
 
-          // 調べるマスが盤外になったら抜ける
-          while (!isOutOfIndex(directionLineColumn, directionLineRow)) {
-            // 駒が無ければ抜ける
-            if (disks[directionLineColumn][directionLineRow].diskType ==
-                DiskType.none) {
-              break;
+              // 方向に相手の駒がある時の処理。その駒から次の駒から調べる。
+              var directionLineColumn = directionColumn + direction.column;
+              var directionLineRow = directionRow + direction.row;
+
+              // 調べるマスが盤外になったら抜ける
+              while (!isOutOfIndex(directionLineColumn, directionLineRow)) {
+                // 駒が無ければ抜ける
+                if (disks[directionLineColumn][directionLineRow].diskType ==
+                    DiskType.none) {
+                  break;
+                }
+
+                // 自分の駒があれば駒を置ける所。trueを返す
+                if (disks[directionLineColumn][directionLineRow].diskType ==
+                    checkTurn.turnDiskType) {
+                  _disks = _disks..[i][j] = disk.copyWith(isPlaceable: true);
+                  Logger().i('column$i row$j\npossiblePlaceSquareNumber$possiblePlaceSquareNumber');
+                  break;
+                }
+
+                directionLineColumn += direction.column;
+                directionLineRow += direction.row;
+              }
             }
 
-            // 自分の駒があれば駒を置ける所。trueを返す
-            if (disks[directionLineColumn][directionLineRow].diskType ==
-                turnDiskType) {
-              _isHavePossiblePlaceDiskSquare = true;
-              _possiblePlaceSquareNumber += 1;
-              return true;
-            }
+            if(_disks[i][j].isPlaceable) { break; }
 
-            directionLineColumn += direction.column;
-            directionLineRow += direction.row;
-          }
+            // ８方向を全て調べて条件に合わなければfalseを返す
+            _disks = _disks..[i][j] = disk.copyWith(isPlaceable: false);
+            Logger().i('column$i row$j\npossiblePlaceSquareNumber$possiblePlaceSquareNumber');
+            break;
         }
-
-        // ８方向を全て調べて条件に合わなければfalseを返す
-        return false;
+      }
     }
+    notifyListeners();
   }
 
   void switchTurn() {
     if(possiblePlaceSquareNumber > 0) {
       _turn = turn.switchTurn;
     }
-    _possiblePlaceSquareNumber = 0;
-    _isHavePossiblePlaceDiskSquare = false;
     notifyListeners();
   }
 
   void placeDisk(Disk disk) {
     disks[disk.column][disk.row] =
-        disks[disk.column][disk.row].copyWith(diskType: turnDiskType);
+        disks[disk.column][disk.row].copyWith(diskType: turn.turnDiskType);
     notifyListeners();
   }
 
@@ -173,6 +166,7 @@ class GameViewModel extends ChangeNotifier {
     final column = disk.column;
     final row = disk.row;
     var turnOverDisksNumber = 0;
+    final tempDisks = disks;
 
     // 駒がない所から８方向の駒について調べる
     for (var direction in Direction.values) {
@@ -185,8 +179,8 @@ class GameViewModel extends ChangeNotifier {
       }
 
       // 手番の人の駒であるまたは駒が無ければ抜ける
-      if (disks[directionColumn][directionRow].diskType == turnDiskType ||
-          disks[directionColumn][directionRow].diskType == DiskType.none) {
+      if (tempDisks[directionColumn][directionRow].diskType == turn.turnDiskType ||
+          tempDisks[directionColumn][directionRow].diskType == DiskType.none) {
         continue;
       }
 
@@ -197,20 +191,20 @@ class GameViewModel extends ChangeNotifier {
       // 調べるマスが盤外になったら抜ける
       while (!isOutOfIndex(directionLineColumn, directionLineRow)) {
         // 駒が無ければ抜ける
-        if (disks[directionLineColumn][directionLineRow].diskType ==
+        if (tempDisks[directionLineColumn][directionLineRow].diskType ==
             DiskType.none) {
           break;
         }
 
         // 自分の駒があればそこから駒を置いた地点まで駒を返す
-        if (disks[directionLineColumn][directionLineRow].diskType ==
-            turnDiskType) {
+        if (tempDisks[directionLineColumn][directionLineRow].diskType ==
+            turn.turnDiskType) {
           directionLineColumn -= direction.column;
           directionLineRow -= direction.row;
           do {
-            _disks[directionLineColumn][directionLineRow] =
-                disks[directionLineColumn][directionLineRow]
-                    .copyWith(diskType: turnDiskType);
+            tempDisks[directionLineColumn][directionLineRow] =
+                tempDisks[directionLineColumn][directionLineRow]
+                    .copyWith(diskType: turn.turnDiskType);
             turnOverDisksNumber++;
             directionLineColumn -= direction.column;
             directionLineRow -= direction.row;
@@ -223,6 +217,7 @@ class GameViewModel extends ChangeNotifier {
         directionLineColumn += direction.column;
         directionLineRow += direction.row;
       }
+      _disks = tempDisks;
     }
 
     switch (turn) {
@@ -237,6 +232,14 @@ class GameViewModel extends ChangeNotifier {
         break;
     }
 
+    notifyListeners();
+  }
+
+  void onePlay(Disk tappedDisk) {
+    placeDisk(tappedDisk);
+    turnOverDisks(tappedDisk);
+    canPlaceDisk(turn.switchTurn);
+    switchTurn();
     notifyListeners();
   }
 
