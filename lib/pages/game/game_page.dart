@@ -6,8 +6,6 @@ import 'package:othello/foundation/enum.dart';
 import 'package:othello/pages/game/board_painter.dart';
 import 'package:othello/pages/game/game_view_model.dart';
 
-import '../../model/disk.dart';
-
 class GamePage extends HookConsumerWidget {
   const GamePage({super.key});
 
@@ -77,7 +75,7 @@ class GamePage extends HookConsumerWidget {
                   message: '置けるマスがない為ターンをスキップします。',
                 );
                 final passedResult = ref.read(gameProvider).switchTurn();
-                if(passedResult == Result.pass) {
+                if (passedResult == Result.pass) {
                   Navigator.pop(context);
                   final gameResult = ref.read(gameProvider).gameResult;
                   showOkAlertDialog(
@@ -98,31 +96,6 @@ class GamePage extends HookConsumerWidget {
         },
       );
     });
-  }
-
-  Widget _buildDisk(Disk disk, bool isPossiblePlaceDisk) {
-    final Color diskColor;
-    switch (disk.diskType) {
-      case DiskType.none:
-        return isPossiblePlaceDisk
-            ? const Text(
-                '・',
-                style: TextStyle(fontSize: 24, color: Colors.yellow),
-              )
-            : const SizedBox();
-
-      case DiskType.black:
-        diskColor = Colors.black;
-        break;
-      case DiskType.white:
-        diskColor = Colors.white;
-        break;
-    }
-    return Container(
-      margin: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-          color: diskColor, borderRadius: BorderRadius.circular(50)),
-    );
   }
 
   Widget _buildGameInformation() {

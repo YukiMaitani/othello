@@ -58,9 +58,9 @@ class GameViewModel extends ChangeNotifier {
   }
 
   String get gameResult {
-    if(blackDisksNumber > whiteDisksNumber) {
+    if (blackDisksNumber > whiteDisksNumber) {
       return '黒：$blackDisksNumber　白：$whiteDisksNumber\nで黒の勝ちです。';
-    } else if ( whiteDisksNumber > blackDisksNumber ) {
+    } else if (whiteDisksNumber > blackDisksNumber) {
       return '黒：$blackDisksNumber　白：$whiteDisksNumber\nで白の勝ちです。';
     } else {
       return '黒：$blackDisksNumber　白：$whiteDisksNumber\nで引き分けです。';

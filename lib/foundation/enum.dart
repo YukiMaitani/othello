@@ -1,23 +1,14 @@
-
 import 'package:flutter/material.dart';
 
 enum DiskType {
-  black('黒'),
-  white('白'),
-  none('無');
-
-  const DiskType(this.text);
-
-  final String text;
+  black,
+  white,
+  none;
 }
 
 enum Turn {
-  black('黒番'),
-  white('白番');
-
-  const Turn(this.text);
-
-  final String text;
+  black,
+  white;
 
   Color get color {
     switch (this) {
@@ -28,33 +19,21 @@ enum Turn {
     }
   }
 
-  Color get reverseColor {
-    switch (this) {
-      case Turn.white:
-        return Colors.black;
-      case Turn.black:
-        return Colors.white;
-    }
-  }
-
   Turn get switchTurn {
-    switch(this) {
+    switch (this) {
       case Turn.white:
         return Turn.black;
       case Turn.black:
-          return Turn.white;
+        return Turn.white;
     }
   }
 
   DiskType get turnDiskType {
     switch (this) {
-
       case Turn.black:
         return DiskType.black;
-        break;
       case Turn.white:
         return DiskType.white;
-        break;
     }
   }
 }
@@ -102,8 +81,4 @@ enum Direction {
   }
 }
 
-enum Result {
-  proceed,
-  pass,
-  filled
-}
+enum Result { proceed, pass, filled }
