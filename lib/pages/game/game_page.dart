@@ -78,6 +78,7 @@ class GamePage extends HookConsumerWidget {
                 );
                 final passedResult = ref.read(gameProvider).switchTurn();
                 if(passedResult == Result.pass) {
+                  Navigator.pop(context);
                   final gameResult = ref.read(gameProvider).gameResult;
                   showOkAlertDialog(
                     context: context,
