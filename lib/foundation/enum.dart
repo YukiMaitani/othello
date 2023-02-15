@@ -81,4 +81,4 @@ enum Direction {
   }
 }
 
-enum Result { proceed, pass, filled }
+enum TurnCheckResult { proceed, pass, filled }

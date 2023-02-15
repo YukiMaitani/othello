@@ -82,7 +82,7 @@ class GameViewModel extends ChangeNotifier {
     _disks[4][3] = _disks[4][3].copyWith(diskType: DiskType.black);
     _disks[4][4] = _disks[4][4].copyWith(diskType: DiskType.white);
     _turn = Turn.black;
-    canPlaceDisk(turn);
+    checkCanPlaceDisk(turn);
     _blackDisksNumber = 2;
     _whiteDisksNumber = 2;
     notifyListeners();
@@ -95,7 +95,7 @@ class GameViewModel extends ChangeNotifier {
         rowIndex > rowsNumber - 1;
   }
 
-  void canPlaceDisk(Turn checkTurn) {
+  void checkCanPlaceDisk(Turn checkTurn) {
     for (var i = 0; i < columnsNumber; i++) {
       outer:
       for (var j = 0; j < rowsNumber; j++) {
@@ -167,9 +167,9 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Result switchTurn() {
+  TurnCheckResult switchTurn() {
     _turn = turn.switchTurn;
-    canPlaceDisk(turn);
+    checkCanPlaceDisk(turn);
     notifyListeners();
     return checkResult();
   }
@@ -254,15 +254,15 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Result checkResult() {
+  TurnCheckResult checkResult() {
     if (possiblePlaceSquareNumber > 0) {
-      return Result.proceed;
+      return TurnCheckResult.proceed;
     }
     if (possiblePlaceSquareNumber == 0 &&
         blackDisksNumber + whiteDisksNumber != 64) {
-      return Result.pass;
+      return TurnCheckResult.pass;
     } else {
-      return Result.filled;
+      return TurnCheckResult.filled;
     }
   }
 

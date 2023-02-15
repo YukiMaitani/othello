@@ -67,15 +67,15 @@ class GamePage extends HookConsumerWidget {
             final result = ref.read(gameProvider).switchTurn();
             Logger().i(result);
             switch (result) {
-              case Result.proceed:
+              case TurnCheckResult.proceed:
                 break;
-              case Result.pass:
+              case TurnCheckResult.pass:
                 showOkAlertDialog(
                   context: context,
                   message: '置けるマスがない為ターンをスキップします。',
                 );
                 final passedResult = ref.read(gameProvider).switchTurn();
-                if (passedResult == Result.pass) {
+                if (passedResult == TurnCheckResult.pass) {
                   Navigator.pop(context);
                   final gameResult = ref.read(gameProvider).gameResult;
                   showOkAlertDialog(
@@ -84,7 +84,7 @@ class GamePage extends HookConsumerWidget {
                   );
                 }
                 break;
-              case Result.filled:
+              case TurnCheckResult.filled:
                 final gameResult = ref.read(gameProvider).gameResult;
                 showOkAlertDialog(
                   context: context,
