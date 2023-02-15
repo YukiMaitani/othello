@@ -64,9 +64,9 @@ class GamePage extends HookConsumerWidget {
           final tappedDisk = ref.read(gameProvider).disks[column][row];
           if (tappedDisk.isPlaceable) {
             ref.read(gameProvider).onePlay(tappedDisk);
-            final result = ref.read(gameProvider).switchTurn();
-            Logger().i(result);
-            switch (result) {
+            final turnCheckResult = ref.read(gameProvider).switchTurn();
+            Logger().i(turnCheckResult);
+            switch (turnCheckResult) {
               case TurnCheckResult.proceed:
                 break;
               case TurnCheckResult.pass:
@@ -74,8 +74,8 @@ class GamePage extends HookConsumerWidget {
                   context: context,
                   message: '置けるマスがない為ターンをスキップします。',
                 );
-                final passedResult = ref.read(gameProvider).switchTurn();
-                if (passedResult == TurnCheckResult.pass) {
+                final passedTurnCheckResult = ref.read(gameProvider).switchTurn();
+                if (passedTurnCheckResult == TurnCheckResult.pass) {
                   Navigator.pop(context);
                   final gameResult = ref.read(gameProvider).gameResult;
                   showOkAlertDialog(
