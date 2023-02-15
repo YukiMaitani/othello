@@ -28,13 +28,19 @@ class GamePage extends HookConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Spacer(flex: 5,),
+          const Spacer(
+            flex: 5,
+          ),
           _buildGameInformation(),
           const Spacer(),
           _buildBoard(),
-          const Spacer(flex: 2,),
+          const Spacer(
+            flex: 2,
+          ),
           _buildInitializationButton(),
-          const Spacer(flex: 2,),
+          const Spacer(
+            flex: 2,
+          ),
         ],
       );
     });
@@ -55,47 +61,43 @@ class GamePage extends HookConsumerWidget {
           ),
         ),
         onTapDown: (value) {
-          final row = ((value.localPosition.dx/ baseWidth) * 8).toInt();
+          final row = ((value.localPosition.dx / baseWidth) * 8).toInt();
           final column = ((value.localPosition.dy / baseWidth) * 8).toInt();
           final tappedDisk = ref.read(gameProvider).disks[column][row];
-          if(tappedDisk.isPlaceable) {
+          if (tappedDisk.isPlaceable) {
             ref.read(gameProvider).onePlay(tappedDisk);
+            final result = ref.read(gameProvider).switchTurn();
+            Logger().i(result);
+            switch (result) {
+              case Result.proceed:
+                break;
+              case Result.pass:
+                showOkAlertDialog(
+                  context: context,
+                  message: '置けるマスがない為ターンをスキップします。',
+                );
+                final passedResult = ref.read(gameProvider).switchTurn();
+                if(passedResult == Result.pass) {
+                  final gameResult = ref.read(gameProvider).gameResult;
+                  showOkAlertDialog(
+                    context: context,
+                    message: 'お互いに置けるマスがありません。\n$gameResult',
+                  );
+                }
+                break;
+              case Result.filled:
+                final gameResult = ref.read(gameProvider).gameResult;
+                showOkAlertDialog(
+                  context: context,
+                  message: '全てのマスが埋まりました。\n$gameResult',
+                );
+                break;
+            }
           }
         },
       );
     });
   }
-
-  // Widget _buildSquare(Disk disk) {
-  //   return HookConsumer(builder: (context, ref, child) {
-  //     final isPossiblePlaceDisk = ref.watch(
-  //         gameProvider.select((value) => value.isPossiblePlaceDisk(disk)));
-  //     return GestureDetector(
-  //       child: Container(
-  //         decoration: BoxDecoration(
-  //             color: const Color(0xFF008000),
-  //             border: Border.all(color: Colors.black)),
-  //         child: Center(
-  //           child: _buildDisk(disk, isPossiblePlaceDisk),
-  //         ),
-  //       ),
-  //       onTap: () {
-  //         if (isPossiblePlaceDisk) {
-  //           final gameReader = ref.read(gameProvider);
-  //           gameReader.placeDisk(disk);
-  //           gameReader.turnOverDisks(disk);
-  //           if (!gameReader.isHavePossiblePlaceDiskSquare) {
-  //             showOkAlertDialog(
-  //               context: context,
-  //               message: '置けるマスがない為ターンをスキップします。',
-  //             );
-  //           }
-  //           gameReader.switchTurn();
-  //         }
-  //       },
-  //     );
-  //   });
-  // }
 
   Widget _buildDisk(Disk disk, bool isPossiblePlaceDisk) {
     final Color diskColor;
@@ -187,18 +189,17 @@ class GamePage extends HookConsumerWidget {
   }
 
   Widget _buildInitializationButton() {
-    return HookConsumer(builder: (context, ref, child){
+    return HookConsumer(builder: (context, ref, child) {
       return Align(
         alignment: Alignment.bottomRight,
         child: ElevatedButton(
-            onPressed: () async{
+            onPressed: () async {
               final willInitialization = await showOkCancelAlertDialog(
                   context: context,
-                message: '新規対局を開始しますか？',
-                okLabel: '開始',
-                cancelLabel: 'キャンセル'
-              );
-              switch(willInitialization) {
+                  message: '新規対局を開始しますか？',
+                  okLabel: '開始',
+                  cancelLabel: 'キャンセル');
+              switch (willInitialization) {
                 case OkCancelResult.ok:
                   ref.read(gameProvider).initDisksType();
                   break;
@@ -211,11 +212,10 @@ class GamePage extends HookConsumerWidget {
               height: 40,
               child: Center(
                 child: Text(
-                    '新規対局',
+                  '新規対局',
                 ),
               ),
-            )
-        ),
+            )),
       );
     });
   }

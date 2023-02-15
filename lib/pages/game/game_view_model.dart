@@ -57,12 +57,26 @@ class GameViewModel extends ChangeNotifier {
     return disksFlatten.where((disk) => disk.isPlaceable == true).length;
   }
 
+  String get gameResult {
+    if(blackDisksNumber > whiteDisksNumber) {
+      return '黒：$blackDisksNumber　白：$whiteDisksNumber\nで黒の勝ちです。';
+    } else if ( whiteDisksNumber > blackDisksNumber ) {
+      return '黒：$blackDisksNumber　白：$whiteDisksNumber\nで白の勝ちです。';
+    } else {
+      return '黒：$blackDisksNumber　白：$whiteDisksNumber\nで引き分けです。';
+    }
+  }
 
   void initDisksType() {
     _disks = List.generate(
         columnsNumber,
-        (column) => List.generate(rowsNumber,
-            (row) => Disk(diskType: DiskType.none, column: column, row: row, isPlaceable: false)));
+        (column) => List.generate(
+            rowsNumber,
+            (row) => Disk(
+                diskType: DiskType.none,
+                column: column,
+                row: row,
+                isPlaceable: false)));
     _disks[3][3] = _disks[3][3].copyWith(diskType: DiskType.white);
     _disks[3][4] = _disks[3][4].copyWith(diskType: DiskType.black);
     _disks[4][3] = _disks[4][3].copyWith(diskType: DiskType.black);
@@ -82,15 +96,17 @@ class GameViewModel extends ChangeNotifier {
   }
 
   void canPlaceDisk(Turn checkTurn) {
-    for(var i = 0;i < columnsNumber;i++) {
-      outer:for(var j = 0;j< rowsNumber;j++) {
+    for (var i = 0; i < columnsNumber; i++) {
+      outer:
+      for (var j = 0; j < rowsNumber; j++) {
         final disk = disks[i][j];
 
         switch (disk.diskType) {
           case DiskType.black:
           case DiskType.white:
             _disks = _disks..[i][j] = disk.copyWith(isPlaceable: false);
-            Logger().i('column$i row$j\npossiblePlaceSquareNumber$possiblePlaceSquareNumber');
+            Logger().i(
+                'column$i row$j\npossiblePlaceSquareNumber$possiblePlaceSquareNumber');
             break;
 
           case DiskType.none:
@@ -107,8 +123,10 @@ class GameViewModel extends ChangeNotifier {
               }
 
               // 手番の人の駒であるまたは駒が無ければ抜ける
-              if (disks[directionColumn][directionRow].diskType == checkTurn.turnDiskType ||
-                  disks[directionColumn][directionRow].diskType == DiskType.none) {
+              if (disks[directionColumn][directionRow].diskType ==
+                      checkTurn.turnDiskType ||
+                  disks[directionColumn][directionRow].diskType ==
+                      DiskType.none) {
                 continue;
               }
 
@@ -128,7 +146,8 @@ class GameViewModel extends ChangeNotifier {
                 if (disks[directionLineColumn][directionLineRow].diskType ==
                     checkTurn.turnDiskType) {
                   _disks = _disks..[i][j] = disk.copyWith(isPlaceable: true);
-                  Logger().i('column$i row$j\npossiblePlaceSquareNumber$possiblePlaceSquareNumber');
+                  Logger().i(
+                      'column$i row$j\npossiblePlaceSquareNumber$possiblePlaceSquareNumber');
                   continue outer;
                 }
 
@@ -139,7 +158,8 @@ class GameViewModel extends ChangeNotifier {
 
             // ８方向を全て調べて条件に合わなければfalseを返す
             _disks = _disks..[i][j] = disk.copyWith(isPlaceable: false);
-            Logger().i('column$i row$j\npossiblePlaceSquareNumber$possiblePlaceSquareNumber');
+            Logger().i(
+                'column$i row$j\npossiblePlaceSquareNumber$possiblePlaceSquareNumber');
             break;
         }
       }
@@ -147,11 +167,11 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void switchTurn() {
-    if(possiblePlaceSquareNumber > 0) {
-      _turn = turn.switchTurn;
-    }
+  Result switchTurn() {
+    _turn = turn.switchTurn;
+    canPlaceDisk(turn);
     notifyListeners();
+    return checkResult();
   }
 
   void placeDisk(Disk disk) {
@@ -177,7 +197,8 @@ class GameViewModel extends ChangeNotifier {
       }
 
       // 手番の人の駒であるまたは駒が無ければ抜ける
-      if (tempDisks[directionColumn][directionRow].diskType == turn.turnDiskType ||
+      if (tempDisks[directionColumn][directionRow].diskType ==
+              turn.turnDiskType ||
           tempDisks[directionColumn][directionRow].diskType == DiskType.none) {
         continue;
       }
@@ -233,12 +254,21 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Result checkResult() {
+    if (possiblePlaceSquareNumber > 0) {
+      return Result.proceed;
+    }
+    if (possiblePlaceSquareNumber == 0 &&
+        blackDisksNumber + whiteDisksNumber != 64) {
+      return Result.pass;
+    } else {
+      return Result.filled;
+    }
+  }
+
   void onePlay(Disk tappedDisk) {
     placeDisk(tappedDisk);
     turnOverDisks(tappedDisk);
-    canPlaceDisk(turn.switchTurn);
-    switchTurn();
     notifyListeners();
   }
-
 }

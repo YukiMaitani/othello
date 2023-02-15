@@ -101,3 +101,9 @@ enum Direction {
     }
   }
 }
+
+enum Result {
+  proceed,
+  pass,
+  filled
+}
