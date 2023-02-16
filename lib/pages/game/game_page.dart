@@ -104,7 +104,9 @@ class GamePage extends HookConsumerWidget {
             }
           }
           if (ref.read(gameProvider).computerTurn != null) {
-            ref.read(gameProvider).computerPlay();
+            Future.delayed(const Duration(seconds: 1)).then((_) => {
+              ref.read(gameProvider).computerPlay()
+            });
           }
         },
       );
