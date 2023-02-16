@@ -67,6 +67,18 @@ class GameViewModel extends ChangeNotifier {
     }
   }
 
+  Turn? _computerTurn;
+
+  Turn? get computerTurn => _computerTurn;
+
+  set computerTurn(Turn? value) {
+    _computerTurn = value;
+    notifyListeners();
+  }
+
+  bool get isComputerPlaceable =>
+      computerTurn == turn && possiblePlaceSquareNumber > 0;
+
   void initDisksType() {
     _disks = List.generate(
         columnsNumber,
@@ -269,6 +281,18 @@ class GameViewModel extends ChangeNotifier {
   void onePlay(Disk tappedDisk) {
     placeDisk(tappedDisk);
     turnOverDisks(tappedDisk);
+    notifyListeners();
+  }
+
+  void computerPlay() {
+    if (isComputerPlaceable) {
+      final placeableSquareList =
+          disksFlatten.where((disk) => disk.isPlaceable == true).toList();
+      final computerHand = (placeableSquareList..shuffle()).first;
+      placeDisk(computerHand);
+      turnOverDisks(computerHand);
+    }
+    switchTurn();
     notifyListeners();
   }
 }

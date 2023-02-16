@@ -35,7 +35,16 @@ class GamePage extends HookConsumerWidget {
           const Spacer(
             flex: 2,
           ),
-          _buildInitializationButton(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              _playWithComputerButton(),
+              const SizedBox(
+                width: 40,
+              ),
+              _buildInitializationButton(),
+            ],
+          ),
           const Spacer(
             flex: 2,
           ),
@@ -74,7 +83,8 @@ class GamePage extends HookConsumerWidget {
                   context: context,
                   message: '置けるマスがない為ターンをスキップします。',
                 );
-                final passedTurnCheckResult = ref.read(gameProvider).switchTurn();
+                final passedTurnCheckResult =
+                    ref.read(gameProvider).switchTurn();
                 if (passedTurnCheckResult == TurnCheckResult.pass) {
                   Navigator.pop(context);
                   final gameResult = ref.read(gameProvider).gameResult;
@@ -92,6 +102,9 @@ class GamePage extends HookConsumerWidget {
                 );
                 break;
             }
+          }
+          if (ref.read(gameProvider).computerTurn != null) {
+            ref.read(gameProvider).computerPlay();
           }
         },
       );
@@ -175,6 +188,7 @@ class GamePage extends HookConsumerWidget {
                   cancelLabel: 'キャンセル');
               switch (willInitialization) {
                 case OkCancelResult.ok:
+                  ref.read(gameProvider).computerTurn = null;
                   ref.read(gameProvider).initDisksType();
                   break;
                 case OkCancelResult.cancel:
@@ -187,6 +201,41 @@ class GamePage extends HookConsumerWidget {
               child: Center(
                 child: Text(
                   '新規対局',
+                ),
+              ),
+            )),
+      );
+    });
+  }
+
+  Widget _playWithComputerButton() {
+    return HookConsumer(builder: (context, ref, child) {
+      return Align(
+        alignment: Alignment.bottomRight,
+        child: ElevatedButton(
+            onPressed: () async {
+              final willInitialization = await showOkCancelAlertDialog(
+                  context: context,
+                  message: 'コンピュータと対局を開始しますか？',
+                  okLabel: '開始',
+                  cancelLabel: 'キャンセル');
+              switch (willInitialization) {
+                case OkCancelResult.ok:
+                  ref.read(gameProvider).computerTurn = Turn.white;
+                  ref.read(gameProvider).initDisksType();
+                  break;
+                case OkCancelResult.cancel:
+                  break;
+              }
+            },
+            child: Container(
+              color: Colors.black38,
+              width: 120,
+              height: 40,
+              child: const Center(
+                child: Text(
+                  'COMと対局',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             )),
