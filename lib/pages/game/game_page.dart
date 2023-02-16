@@ -228,11 +228,11 @@ class GamePage extends HookConsumerWidget {
                   break;
               }
             },
-            child: Container(
-              color: Colors.black38,
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.black38),
+            child: const SizedBox(
               width: 120,
               height: 40,
-              child: const Center(
+              child: Center(
                 child: Text(
                   'COMと対局',
                   style: TextStyle(color: Colors.white),
