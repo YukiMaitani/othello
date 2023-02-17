@@ -92,6 +92,12 @@ class GamePage extends HookConsumerWidget {
                     context: context,
                     message: 'お互いに置けるマスがありません。\n$gameResult',
                   );
+                } else {
+                  if (ref.read(gameProvider).computerTurn != null) {
+                    Future.delayed(const Duration(seconds: 1)).then((_) => {
+                      ref.read(gameProvider).computerPlay()
+                    });
+                  }
                 }
                 break;
               case TurnCheckResult.filled:
@@ -102,11 +108,11 @@ class GamePage extends HookConsumerWidget {
                 );
                 break;
             }
-          }
-          if (ref.read(gameProvider).computerTurn != null) {
-            Future.delayed(const Duration(seconds: 1)).then((_) => {
-              ref.read(gameProvider).computerPlay()
-            });
+            if (ref.read(gameProvider).computerTurn != null) {
+              Future.delayed(const Duration(seconds: 1)).then((_) => {
+                ref.read(gameProvider).computerPlay()
+              });
+            }
           }
         },
       );
